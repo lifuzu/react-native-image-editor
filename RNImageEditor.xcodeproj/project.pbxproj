@@ -9,18 +9,7 @@
 /* Begin PBXBuildFile section */
 		624177B21B8E5A4900897A7A /* RNImageEditor.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 624177B11B8E5A4900897A7A /* RNImageEditor.h */; };
 		624177B41B8E5A4900897A7A /* RNImageEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = 624177B31B8E5A4900897A7A /* RNImageEditor.m */; };
-		624177BA1B8E5A4900897A7A /* libRNImageEditor.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 624177AE1B8E5A4900897A7A /* libRNImageEditor.a */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		624177BB1B8E5A4900897A7A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 624177A61B8E5A4900897A7A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 624177AD1B8E5A4900897A7A;
-			remoteInfo = RNImageEditor;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		624177AC1B8E5A4900897A7A /* CopyFiles */ = {
@@ -46,14 +35,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		624177B61B8E5A4900897A7A /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				624177BA1B8E5A4900897A7A /* libRNImageEditor.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -117,9 +98,6 @@
 					624177AD1B8E5A4900897A7A = {
 						CreatedOnToolsVersion = 6.4;
 					};
-					624177B81B8E5A4900897A7A = {
-						CreatedOnToolsVersion = 6.4;
-					};
 				};
 			};
 			buildConfigurationList = 624177A91B8E5A4900897A7A /* Build configuration list for PBXProject "RNImageEditor" */;
@@ -135,20 +113,9 @@
 			projectRoot = "";
 			targets = (
 				624177AD1B8E5A4900897A7A /* RNImageEditor */,
-				624177B81B8E5A4900897A7A /* RNImageEditorTests */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXResourcesBuildPhase section */
-		624177B71B8E5A4900897A7A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		624177AA1B8E5A4900897A7A /* Sources */ = {
@@ -159,22 +126,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		624177B51B8E5A4900897A7A /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		624177BC1B8E5A4900897A7A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 624177AD1B8E5A4900897A7A /* RNImageEditor */;
-			targetProxy = 624177BB1B8E5A4900897A7A /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		624177C01B8E5A4900897A7A /* Debug */ = {
@@ -258,6 +210,11 @@
 		624177C31B8E5A4900897A7A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"${SRCROOT}/node_modules/react-native/React/**",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -267,41 +224,14 @@
 		624177C41B8E5A4900897A7A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"${SRCROOT}/node_modules/react-native/React/**",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
-		624177C61B8E5A4900897A7A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = RNImageEditorTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		624177C71B8E5A4900897A7A /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = RNImageEditorTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
@@ -322,15 +252,6 @@
 			buildConfigurations = (
 				624177C31B8E5A4900897A7A /* Debug */,
 				624177C41B8E5A4900897A7A /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
-		624177C51B8E5A4900897A7A /* Build configuration list for PBXNativeTarget "RNImageEditorTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				624177C61B8E5A4900897A7A /* Debug */,
-				624177C71B8E5A4900897A7A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

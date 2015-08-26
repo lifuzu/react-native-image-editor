@@ -6,10 +6,11 @@
 //  Copyright (c) 2015 Carystal. All rights reserved.
 //
 
-//#import "RCTView.h"
-//#import "RCTBridge.h"
-#import "Foundation/Foundation.h"
+#import "RCTView.h"
+#import "RCTBridge.h"
 
-@interface RNImageEditor : NSObject
+@interface RNImageEditor : RCTView
+
+- (id)initWithBridge:(RCTBridge *)bridge;
 
 @end
