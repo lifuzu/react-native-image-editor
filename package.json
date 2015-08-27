@@ -8,6 +8,8 @@
     "RNImageEditor.xcodeproj",
     "ImageEditor.ios.js",
     "README.md",
+    "RNClickThroughWindow.h",
+    "RNClickThroughWindow.m",
     "RNImageEditor/RNImageEditor.h",
     "RNImageEditor/RNImageEditor.m",
     "RNImageEditor/RNImageEditorManager.h",
