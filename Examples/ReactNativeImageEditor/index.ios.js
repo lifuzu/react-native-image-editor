@@ -36,17 +36,18 @@ var ReactNativeImageEditor = React.createClass({
       <View style={styles.container}>
         <Text>Hello there</Text>
         <ImageEditor isVisible={true}>
-          <View style={styles.wrapper}>
-            <ListView
-              style={styles.listView}
-              dataSource={this.state.dataSource}
-              renderRow={this.renderRow} />
-          </View>
         </ImageEditor>
       </View>
     );
   }
 });
+
+          // <View style={styles.wrapper}>
+          //   <ListView
+          //     style={styles.listView}
+          //     dataSource={this.state.dataSource}
+          //     renderRow={this.renderRow} />
+          // </View>
 
 //         <Text style={styles.welcome}>
 //           Welcome to React Native!
@@ -62,7 +63,7 @@ var ReactNativeImageEditor = React.createClass({
 var styles = StyleSheet.create({
   listView: {
     flex: 1,
-    margin: 50,
+    margin: 20,
     backgroundColor: '#ffffff',
   },
 

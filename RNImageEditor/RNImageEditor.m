@@ -16,7 +16,9 @@
 @implementation RNImageEditor {
   RNClickThroughWindow *_imageEditorWindow;
   UIViewController *_imageEditorViewController;
-  RCTView *_imageEditorBaseView;
+  UIScrollView *_imageEditorBaseScrollView;
+  UIImageView *_imageEditorImageView;
+  UIView *_imageEditorContainerView;
   RCTTouchHandler *_touchHandler;
   BOOL _aboveStatusBar;
 }
@@ -40,14 +42,36 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
 {
   if ((self = [super init])) {
     _imageEditorViewController = [[UIViewController alloc] init];
-    _imageEditorBaseView = [[RCTView alloc] init];
-    
+
+    _imageEditorBaseScrollView = [[UIScrollView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    _imageEditorBaseScrollView.backgroundColor = [UIColor grayColor];
+    _imageEditorBaseScrollView.delegate = self;
+    _imageEditorBaseScrollView.bounces = NO;
+
+    UIImage *image = [UIImage imageNamed:@"cat.jpg"];
+    _imageEditorImageView = [[UIImageView alloc] initWithImage:image];
+    _imageEditorImageView.frame = (CGRect){.origin=CGPointMake(0.0f, 0.0f), .size=image.size};
+
+    _imageEditorContainerView = [[UIView alloc] initWithFrame:_imageEditorImageView.bounds];
+    [_imageEditorContainerView addSubview:_imageEditorImageView];
+
+    _imageEditorBaseScrollView.contentSize = _imageEditorContainerView.frame.size;
+    [_imageEditorBaseScrollView addSubview:_imageEditorContainerView];
+
+    CGRect scrollViewFrame = _imageEditorBaseScrollView.frame;
+    CGFloat scaleWidth = scrollViewFrame.size.width / _imageEditorBaseScrollView.contentSize.width;
+    CGFloat scaleHeight = scrollViewFrame.size.height / _imageEditorBaseScrollView.contentSize.height;
+    CGFloat minScale = MIN(scaleWidth, scaleHeight);
+    _imageEditorBaseScrollView.minimumZoomScale = minScale;
+    _imageEditorBaseScrollView.maximumZoomScale = 8.0;
+    [_imageEditorBaseScrollView setZoomScale:_imageEditorBaseScrollView.minimumZoomScale];
+
     /* Must register handler because we are in a new UIWindow and our
      * imageEditorBaseView does not have a RCTRootView parent */
     _touchHandler = [[RCTTouchHandler alloc] initWithBridge:bridge];
-    [_imageEditorBaseView addGestureRecognizer:_touchHandler];
+    [_imageEditorBaseScrollView addGestureRecognizer:_touchHandler];
     
-    _imageEditorViewController.view = _imageEditorBaseView;
+    _imageEditorViewController.view = _imageEditorBaseScrollView;
   }
 
   return self;
@@ -93,7 +117,7 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
 - (void)reactBridgeDidFinishTransaction {
   // forward the `reactBridgeDidFinishTransaction` message to all our subviews
   // in case their native representations do some logic in their handler
-  RCTTraverseViewNodes(_imageEditorBaseView, ^(id<RCTComponent> view) {
+  RCTTraverseViewNodes(_imageEditorBaseScrollView, ^(id<RCTComponent> view) {
     if ([view respondsToSelector:@selector(reactBridgeDidFinishTransaction)]) {
       [view reactBridgeDidFinishTransaction];
     }
@@ -103,20 +127,48 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
 - (void)insertReactSubview:(UIView *)view atIndex:(NSInteger)atIndex
 {
   /* Add subviews to the overlay base view rather than self */
-  [_imageEditorBaseView insertReactSubview:view atIndex:atIndex];
+  [_imageEditorBaseScrollView insertReactSubview:view atIndex:atIndex];
 }
 
 /* We do not need to support unmounting, so I -think- that this cleanup code
  * is safe to put here. */
 - (void)removeFromSuperview
 {
-  [_imageEditorBaseView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+  [_imageEditorBaseScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
   _touchHandler = nil;
   _imageEditorViewController = nil;
-  _imageEditorBaseView = nil;
+  _imageEditorBaseScrollView = nil;
   _imageEditorWindow = nil;
   [super removeFromSuperview];
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
+
+#pragma Zooming
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
+  return _imageEditorContainerView;
+}
+
+- (void)scrollViewDidZoom:(UIScrollView *)scrollView {
+  [self updateImageViewFrame];
+}
+
+- (void)updateImageViewFrame {
+  CGRect rect = _imageEditorContainerView.frame;
+  rect.origin.x =
+    MAX((_imageEditorBaseScrollView.frame.size.width - _imageEditorContainerView.frame.size.width) / 2, 0);
+  rect.origin.y =
+    MAX((_imageEditorBaseScrollView.frame.size.height - _imageEditorContainerView.frame.size.height) / 2, 0);
+
+  _imageEditorContainerView.frame = rect;
+}
+
+- (void)updateScrollViewFrame {
+  CGRect rect = [UIScreen mainScreen].bounds;
+  rect.origin.y = 0;
+  rect.size.height -= 0 * 2;
+  [_imageEditorBaseScrollView setFrame:rect];
+}
+
 
 @end

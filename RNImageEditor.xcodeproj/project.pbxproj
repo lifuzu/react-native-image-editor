@@ -34,6 +34,7 @@
 		624177CB1B8E6BBB00897A7A /* RNClickThroughWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNClickThroughWindow.m; sourceTree = "<group>"; };
 		624177CD1B8E6ECA00897A7A /* RNImageEditorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNImageEditorManager.h; sourceTree = "<group>"; };
 		624177CE1B8E6ECA00897A7A /* RNImageEditorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNImageEditorManager.m; sourceTree = "<group>"; };
+		624178091B8FE31200897A7A /* cat.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cat.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +67,7 @@
 		624177B01B8E5A4900897A7A /* RNImageEditor */ = {
 			isa = PBXGroup;
 			children = (
+				624178091B8FE31200897A7A /* cat.jpg */,
 				624177CD1B8E6ECA00897A7A /* RNImageEditorManager.h */,
 				624177CE1B8E6ECA00897A7A /* RNImageEditorManager.m */,
 				624177CA1B8E6BBB00897A7A /* RNClickThroughWindow.h */,
