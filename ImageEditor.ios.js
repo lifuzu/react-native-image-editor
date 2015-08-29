@@ -15,6 +15,7 @@ var {
 
 type Props = {
   isVisible: boolean;
+  drawingMode: boolean;
 }
 
 var ImageEditor = React.createClass({
@@ -30,12 +31,15 @@ var ImageEditor = React.createClass({
      * an empty View is rendered.
      */
     isVisible: React.PropTypes.bool,
+
+    drawingMode: React.PropTypes.bool,
   },
 
   getDefaultProps(): Props {
     return {
       aboveStatusBar: false,
       isVisible: false,
+      drawingMode: false,
     }
   },
 
@@ -46,7 +50,7 @@ var ImageEditor = React.createClass({
 
     if (this.props.isVisible) {
       return (
-        <RNImageEditor isVisible={true} style={styles.container} pointerEvents="none" aboveStatusBar={this.props.aboveStatusBar}>
+        <RNImageEditor isVisible={true} drawingMode={this.props.drawingMode} style={styles.container} pointerEvents="none" aboveStatusBar={this.props.aboveStatusBar}>
           {React.Children.map(this.props.children, React.addons.cloneWithProps)}
         </RNImageEditor>
       );

@@ -18,9 +18,12 @@
   UIViewController *_imageEditorViewController;
   UIScrollView *_imageEditorBaseScrollView;
   UIImageView *_imageEditorImageView;
+  UIImageView *_imageEditorDrawingView;
   UIView *_imageEditorContainerView;
   RCTTouchHandler *_touchHandler;
   BOOL _aboveStatusBar;
+  BOOL _drawingMode;
+  CGPoint _prevDrawingPosition;
 }
 
 // Taken from react-native/React/Modules/RCTUIManager.m
@@ -52,8 +55,12 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
     _imageEditorImageView = [[UIImageView alloc] initWithImage:image];
     _imageEditorImageView.frame = (CGRect){.origin=CGPointMake(0.0f, 0.0f), .size=image.size};
 
+    _imageEditorDrawingView = [[UIImageView alloc] initWithFrame:_imageEditorImageView.bounds];
+    _imageEditorDrawingView.userInteractionEnabled = NO;
+
     _imageEditorContainerView = [[UIView alloc] initWithFrame:_imageEditorImageView.bounds];
     [_imageEditorContainerView addSubview:_imageEditorImageView];
+    [_imageEditorContainerView addSubview:_imageEditorDrawingView];
 
     _imageEditorBaseScrollView.contentSize = _imageEditorContainerView.frame.size;
     [_imageEditorBaseScrollView addSubview:_imageEditorContainerView];
@@ -69,12 +76,66 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
     /* Must register handler because we are in a new UIWindow and our
      * imageEditorBaseView does not have a RCTRootView parent */
     _touchHandler = [[RCTTouchHandler alloc] initWithBridge:bridge];
-    [_imageEditorBaseScrollView addGestureRecognizer:_touchHandler];
+    [_touchHandler addTarget:self action:@selector(drawingOnTouch:)];
+    [_imageEditorDrawingView addGestureRecognizer:_touchHandler];
     
     _imageEditorViewController.view = _imageEditorBaseScrollView;
+
+    _drawingMode = NO;
   }
 
   return self;
+}
+
+- (void)setDrawingMode:(BOOL)drawingMode {
+  _drawingMode = NO;
+  _imageEditorDrawingView.userInteractionEnabled = _drawingMode;
+
+  // In drawing mode, disable scrolling with single touch
+  _imageEditorBaseScrollView.panGestureRecognizer.minimumNumberOfTouches = 1 + _drawingMode;
+  // [self applyWindowLevel];
+}
+
+- (void)drawingOnTouch:(UIPanGestureRecognizer *)sender {
+  if (sender.numberOfTouches == 1) {
+    CGPoint currentPosition = [sender locationInView:_imageEditorDrawingView];
+
+    if (sender.state == UIGestureRecognizerStateBegan) {
+      _prevDrawingPosition = currentPosition;
+    }
+
+    if (sender.state == UIGestureRecognizerStateEnded) {
+    //   [self setDrawingMode:false];  // disable drawing
+    } else {
+      [self drawLine:_prevDrawingPosition to:currentPosition];
+    }
+
+    _prevDrawingPosition = currentPosition;
+  }
+}
+
+- (void)drawLine:(CGPoint)from to:(CGPoint)to {
+  CGSize size = _imageEditorDrawingView.frame.size;
+
+  UIGraphicsBeginImageContextWithOptions(size, NO, 0.0);
+
+  CGContextRef context = UIGraphicsGetCurrentContext();
+
+  [_imageEditorDrawingView.image drawAtPoint:CGPointZero];
+
+  UIColor *strokeColor = [UIColor blackColor];
+
+  CGContextSetLineWidth(context, 10);
+  CGContextSetStrokeColorWithColor(context, strokeColor.CGColor);
+  CGContextSetLineCap(context, kCGLineCapRound);
+
+  CGContextMoveToPoint(context, from.x, from.y);
+  CGContextAddLineToPoint(context, to.x, to.y);
+  CGContextStrokePath(context);
+
+  _imageEditorDrawingView.image = UIGraphicsGetImageFromCurrentImageContext();
+
+  UIGraphicsEndImageContext();
 }
 
 - (void)setAboveStatusBar:(BOOL)aboveStatusBar {

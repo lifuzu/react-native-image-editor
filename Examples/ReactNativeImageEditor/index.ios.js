@@ -35,7 +35,7 @@ var ReactNativeImageEditor = React.createClass({
     return (
       <View style={styles.container}>
         <Text>Hello there</Text>
-        <ImageEditor isVisible={true}>
+        <ImageEditor isVisible={true} drawingMode={true}>
         </ImageEditor>
       </View>
     );
