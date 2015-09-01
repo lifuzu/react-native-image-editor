@@ -16,8 +16,10 @@ Then open the project `ReactNativeImageEditor.xcodeproj` under the folder: `Reac
 
 When you run the project, sometimes you get a red screen on iOS simulator, like: 
 ![enter image description here](https://lh3.googleusercontent.com/-7HWoxVOeNBI/VeVUuVF2SaI/AAAAAAAADis/USCEBV4PgRY/s600/Screen+Shot+2015-08-31+at+10.43.21+PM.png "ErrorScreenshot.png")
+
 Which should mean your node server console does not yet ready for the development server, like this one:
 ![enter image description here](https://lh3.googleusercontent.com/-ecvvlcdGbJk/VeVVE2jjDtI/AAAAAAAADi4/JTDGhWXtGlI/s600/Screen+Shot+2015-08-31+at+10.45.50+PM.png "NodeDevelopmentConsole.png")
+
 You have to wait for next printouts, like the following:
 ```
 [11:46:54 PM] <START> fs crawl
@@ -34,8 +36,10 @@ You have to wait for next printouts, like the following:
 Since we have to uninstall `watchman`, a little bit longer time need to be waited.
 
 **NOTE**: Uninstall watchman to workaround the bug of that, the latest version of react native does NOT support symbolic for node modules, which we are using in this project, until we publish the module onto https://www.npmjs.com/package;
+
 **NOTE**: Don't use iojs, use nodejs (it is better to keep v0.12.2). iojs open a lot of files, caused the following error:
 ```
 Error: EMFILE: too many open files
 ```
+
 **NOTE**: You probably need to enlarge max open files on mac, please refer to this issue: https://github.com/gruntjs/grunt-contrib-copy/issues/21
