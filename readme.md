@@ -2,6 +2,7 @@ Here is an image editor for react native.
 
 ###Demos:
 Scale:
+
 ![enter image description here](https://lh3.googleusercontent.com/-gHow1zkA8_g/VeVXp1iG8kI/AAAAAAAADjQ/gIOwbHbkDHk/s600/Screen+Shot+2015-09-01+at+12.43.01+AM.png "Cat1.png")
 
 Press `Option` key, then move finger on touchpad:
