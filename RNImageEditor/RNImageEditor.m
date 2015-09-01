@@ -88,7 +88,7 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
 }
 
 - (void)setDrawingMode:(BOOL)drawingMode {
-  _drawingMode = NO;
+  _drawingMode = YES;
   _imageEditorDrawingView.userInteractionEnabled = _drawingMode;
 
   // In drawing mode, disable scrolling with single touch
