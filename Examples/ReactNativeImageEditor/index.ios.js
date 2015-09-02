@@ -7,47 +7,62 @@
 var React = require('react-native');
 var {
   AppRegistry,
+  ListView,
   StyleSheet,
   Text,
+  TouchableHighlight,
   View,
-  ListView,
 } = React;
 
 var ImageEditor = require('react-native-image-editor');
+var PanButton = require('./PanButton');
 
 var ReactNativeImageEditor = React.createClass({
   getInitialState: function() {
-    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    var rows = ['row 1', 'row 2', 'row 3', 'row 4', 'row 5', 'row 6','row 7', 'row 8', 'row 9', 'row 10', 'row 11', 'row 12','row 13', 'row 14', 'row 15', 'row 16', 'row 17', 'row 18','row 19', 'row 20', 'row 21', 'row 22', 'row 23', 'row 24'];
-
-    return { dataSource: ds.cloneWithRows(rows) };
+    return {
+      originalImage: null,
+      editorSize: null,
+      drawingMode: true
+    };
   },
 
-  renderRow: function(row) {
-    return (
-      <View style={{height: 50, borderBottomWidth: 1, borderBottomColor: '#eeeeee',}}>
-        <Text>{row}</Text>
-      </View>
-    );
+  _draw: function() {
+    console.log("Click draw button.");
+    this.setState({ drawingMode: !this.state.drawingMode });
+  },
+  _save: function() {
+    console.log("Click the save button.");
+    // this.refs.imageEditor.save();
+  },
+  _saved: function(filename) {
+    console.log("Save the modified image: " + filename);
   },
 
   render: function() {
     return (
       <View style={styles.container}>
         <Text>Hello there</Text>
-        <ImageEditor isVisible={true} drawingMode={true}>
+        <PanButton style={{flex: 3}} onPress={this._draw} />
+        <ImageEditor drawingMode={this.state.drawingMode}
+          ref="imageEditor"
+          image={this.state.originalImage}
+          size={this.state.editorSize}
+          style={[styles.imageEditor, this.state.editorSize]}>
         </ImageEditor>
       </View>
     );
   }
 });
 
+// <PanButton style={{flex: 3}} onPress={this._save} />
           // <View style={styles.wrapper}>
           //   <ListView
           //     style={styles.listView}
           //     dataSource={this.state.dataSource}
           //     renderRow={this.renderRow} />
           // </View>
+          // <ImageEditor isVisible={true} drawingMode={this.state.drawingMode}>
+          // </ImageEditor>
 
 //         <Text style={styles.welcome}>
 //           Welcome to React Native!

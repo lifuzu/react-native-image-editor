@@ -47,7 +47,7 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
     _imageEditorViewController = [[UIViewController alloc] init];
 
     _imageEditorBaseScrollView = [[UIScrollView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    _imageEditorBaseScrollView.backgroundColor = [UIColor grayColor];
+    _imageEditorBaseScrollView.backgroundColor = [UIColor clearColor];
     _imageEditorBaseScrollView.delegate = self;
     _imageEditorBaseScrollView.bounces = NO;
 
@@ -88,7 +88,7 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
 }
 
 - (void)setDrawingMode:(BOOL)drawingMode {
-  _drawingMode = YES;
+  _drawingMode = drawingMode;
   _imageEditorDrawingView.userInteractionEnabled = _drawingMode;
 
   // In drawing mode, disable scrolling with single touch
@@ -155,13 +155,21 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
   }
 }
 
+- (void)setWindowLevel {
+  if (_imageEditorWindow == nil) {
+    return;
+  } else {
+    _imageEditorWindow.windowLevel = UIWindowLevelNormal - 10;
+  }
+}
+
 /* Every component has it is initializer called twice, once to create a base view
  * with default props and another to actually create it and apply the props. We make
  * this prop that is always true in order to not create UIWindow for the default props
  * instance */
 - (void)setIsVisible:(BOOL)isVisible {
   _imageEditorWindow = [[RNClickThroughWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-  [self applyWindowLevel];
+  [self setWindowLevel];
   _imageEditorWindow.backgroundColor = [UIColor clearColor];
   _imageEditorWindow.rootViewController = _imageEditorViewController;
   _imageEditorWindow.userInteractionEnabled = YES;

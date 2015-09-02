@@ -46,7 +46,7 @@ You have to wait for next printouts, like the following:
 [11:49:53 PM] <END>   Building (deprecated) Asset Map (10343ms)
 [11:49:57 PM] <END>   Building Haste Map (36723ms)
 ```
-Since we have to uninstall `watchman`, a little bit longer time need to be waited.
+Then click 'Reload JS' in the bottom-right corner of the red screen or press `Command` + R key. Since we have to uninstall `watchman`, a little bit longer time need to be waited.
 
 **NOTE**: Uninstall watchman to workaround the bug of that, the latest version of react native does NOT support symbolic for node modules, which we are using in this project, until we publish the module onto https://www.npmjs.com/package;
 
