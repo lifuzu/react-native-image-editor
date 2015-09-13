@@ -26,6 +26,8 @@
   CGPoint _prevDrawingPosition;
 }
 
+UIImage *_imageEditorDrawingImage;
+
 // Taken from react-native/React/Modules/RCTUIManager.m
 // Since our view is not registered as a root view we have to manually
 // iterate through the overlay's subviews and forward the `reactBridgeDidFinishTransaction` message
@@ -125,18 +127,39 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
 
   UIColor *strokeColor = [UIColor blackColor];
 
-  CGContextSetLineWidth(context, 10);
+  CGContextSetLineWidth(context, 60);
   CGContextSetStrokeColorWithColor(context, strokeColor.CGColor);
   CGContextSetLineCap(context, kCGLineCapRound);
 
   CGContextMoveToPoint(context, from.x, from.y);
   CGContextAddLineToPoint(context, to.x, to.y);
   CGContextStrokePath(context);
-
+  CGContextFlush(context);
   _imageEditorDrawingView.image = UIGraphicsGetImageFromCurrentImageContext();
+  _imageEditorDrawingImage = UIGraphicsGetImageFromCurrentImageContext();
 
   UIGraphicsEndImageContext();
 }
+
+- (void)saveImageImpl:(BOOL)anything {
+  CGSize _originalImageSize = _imageEditorImageView.image.size;
+  UIGraphicsBeginImageContextWithOptions(_originalImageSize, NO,
+                                         _imageEditorImageView.image.scale);
+
+  [_imageEditorImageView.image drawAtPoint:CGPointZero];
+    [_imageEditorDrawingImage drawInRect:CGRectMake(0, 0, _originalImageSize.width, _originalImageSize.height) blendMode:kCGBlendModeNormal alpha:1.0];
+
+  UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+
+  UIGraphicsEndImageContext();
+
+  NSFileManager *fileManager = [NSFileManager defaultManager];
+  NSData *imageData = UIImageJPEGRepresentation(newImage, 1.0);
+  [fileManager createFileAtPath:@"/Users/rlee/Desktop/myimage.jpg"
+                       contents:imageData
+                     attributes:nil];
+}
+
 
 - (void)setAboveStatusBar:(BOOL)aboveStatusBar {
   _aboveStatusBar = aboveStatusBar;
@@ -169,7 +192,7 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
  * instance */
 - (void)setIsVisible:(BOOL)isVisible {
   _imageEditorWindow = [[RNClickThroughWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-  [self setWindowLevel];
+//  [self setWindowLevel];
   _imageEditorWindow.backgroundColor = [UIColor clearColor];
   _imageEditorWindow.rootViewController = _imageEditorViewController;
   _imageEditorWindow.userInteractionEnabled = YES;

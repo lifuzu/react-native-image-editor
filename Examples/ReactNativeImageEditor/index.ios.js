@@ -32,17 +32,20 @@ var ReactNativeImageEditor = React.createClass({
   },
   _save: function() {
     console.log("Click the save button.");
-    // this.refs.imageEditor.save();
+    this.refs.imageEditor.save(function(err, data){
+      console.log(data);
+    });
   },
-  _saved: function(filename) {
-    console.log("Save the modified image: " + filename);
-  },
+  // _saved: function(filename) {
+  //   console.log("Save the modified image: " + filename);
+  // },
 
   render: function() {
     return (
       <View style={styles.container}>
         <Text>Hello there</Text>
         <PanButton style={{flex: 3}} onPress={this._draw} />
+        <PanButton style={{flex: 3}} onPress={this._save} />
         <ImageEditor drawingMode={this.state.drawingMode}
           ref="imageEditor"
           image={this.state.originalImage}

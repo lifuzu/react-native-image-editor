@@ -7,6 +7,7 @@
 
 var React = require('react-native');
 var {
+  NativeModules,
   View,
   PropTypes,
   StyleSheet,
@@ -57,6 +58,10 @@ var ImageEditor = React.createClass({
     } else {
       return <View />;
     }
+  },
+
+  save: function(cb) {
+    NativeModules.RNImageEditorManager.saveImage(cb);
   },
 });
 
