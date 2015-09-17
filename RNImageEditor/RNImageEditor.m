@@ -147,14 +147,14 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
                                          _imageEditorImageView.image.scale);
 
   [_imageEditorImageView.image drawAtPoint:CGPointZero];
-    [_imageEditorDrawingImage drawInRect:CGRectMake(0, 0, _originalImageSize.width, _originalImageSize.height) blendMode:kCGBlendModeNormal alpha:1.0];
+  [_imageEditorDrawingImage drawInRect:CGRectMake(0, 0, _originalImageSize.width, _originalImageSize.height) blendMode:kCGBlendModeNormal alpha:1.0];
 
   UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
 
   UIGraphicsEndImageContext();
 
   NSFileManager *fileManager = [NSFileManager defaultManager];
-  NSData *imageData = UIImageJPEGRepresentation(newImage, 1.0);
+  NSData *imageData = UIImageJPEGRepresentation(newImage, 0.6);
   [fileManager createFileAtPath:@"/Users/rlee/Desktop/myimage.jpg"
                        contents:imageData
                      attributes:nil];
