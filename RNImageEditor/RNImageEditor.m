@@ -12,6 +12,7 @@
 #import "RCTTouchHandler.h"
 #import "UIView+React.h"
 #import "RNClickThroughWindow.h"
+#import "RCTImageLoader.h"
 
 @implementation RNImageEditor {
   RNClickThroughWindow *_imageEditorWindow;
@@ -23,9 +24,12 @@
   RCTTouchHandler *_touchHandler;
   BOOL _aboveStatusBar;
   BOOL _drawingMode;
+  NSString *_imageSourceUri;
   CGPoint _prevDrawingPosition;
+  RCTBridge *_bridge;
 }
 
+UIImage *_imageEditorOriginalImage;
 UIImage *_imageEditorDrawingImage;
 
 // Taken from react-native/React/Modules/RCTUIManager.m
@@ -53,38 +57,8 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
     _imageEditorBaseScrollView.delegate = self;
     _imageEditorBaseScrollView.bounces = NO;
 
-    UIImage *image = [UIImage imageNamed:@"cat.jpg"];
-    _imageEditorImageView = [[UIImageView alloc] initWithImage:image];
-    _imageEditorImageView.frame = (CGRect){.origin=CGPointMake(0.0f, 0.0f), .size=image.size};
-
-    _imageEditorDrawingView = [[UIImageView alloc] initWithFrame:_imageEditorImageView.bounds];
-    _imageEditorDrawingView.userInteractionEnabled = NO;
-
-    _imageEditorContainerView = [[UIView alloc] initWithFrame:_imageEditorImageView.bounds];
-    [_imageEditorContainerView addSubview:_imageEditorImageView];
-    [_imageEditorContainerView addSubview:_imageEditorDrawingView];
-
-    _imageEditorBaseScrollView.contentSize = _imageEditorContainerView.frame.size;
-    [_imageEditorBaseScrollView addSubview:_imageEditorContainerView];
-
-    CGRect scrollViewFrame = _imageEditorBaseScrollView.frame;
-    CGFloat scaleWidth = scrollViewFrame.size.width / _imageEditorBaseScrollView.contentSize.width;
-    CGFloat scaleHeight = scrollViewFrame.size.height / _imageEditorBaseScrollView.contentSize.height;
-    CGFloat minScale = MIN(scaleWidth, scaleHeight);
-    _imageEditorBaseScrollView.minimumZoomScale = minScale;
-    _imageEditorBaseScrollView.maximumZoomScale = 8.0;
-    [_imageEditorBaseScrollView setZoomScale:_imageEditorBaseScrollView.minimumZoomScale];
-
-    /* Must register handler because we are in a new UIWindow and our
-     * imageEditorBaseView does not have a RCTRootView parent */
-    _touchHandler = [[RCTTouchHandler alloc] initWithBridge:bridge];
-    [_touchHandler addTarget:self action:@selector(drawingOnTouch:)];
-    [_imageEditorDrawingView addGestureRecognizer:_touchHandler];
-    
-    _imageEditorViewController.view = _imageEditorBaseScrollView;
-
-    _drawingMode = NO;
   }
+  _bridge = bridge;
 
   return self;
 }
@@ -135,6 +109,7 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
   CGContextAddLineToPoint(context, to.x, to.y);
   CGContextStrokePath(context);
   CGContextFlush(context);
+
   _imageEditorDrawingView.image = UIGraphicsGetImageFromCurrentImageContext();
   _imageEditorDrawingImage = UIGraphicsGetImageFromCurrentImageContext();
 
@@ -142,11 +117,11 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
 }
 
 - (void)saveImageImpl:(BOOL)anything {
-  CGSize _originalImageSize = _imageEditorImageView.image.size;
+  CGSize _originalImageSize = _imageEditorOriginalImage.size;
   UIGraphicsBeginImageContextWithOptions(_originalImageSize, NO,
-                                         _imageEditorImageView.image.scale);
+                                         _imageEditorOriginalImage.scale);
 
-  [_imageEditorImageView.image drawAtPoint:CGPointZero];
+  [_imageEditorOriginalImage drawAtPoint:CGPointZero];
   [_imageEditorDrawingImage drawInRect:CGRectMake(0, 0, _originalImageSize.width, _originalImageSize.height) blendMode:kCGBlendModeNormal alpha:1.0];
 
   UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -158,6 +133,52 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
   [fileManager createFileAtPath:@"/Users/rlee/Desktop/myimage.jpg"
                        contents:imageData
                      attributes:nil];
+}
+
+- (void)setImageSourceUri: (NSString*)imageSourceUri {
+  _imageSourceUri = imageSourceUri;
+  NSLog(@"%@",_imageSourceUri);
+  [_bridge.imageLoader loadImageWithTag:_imageSourceUri callback:^(NSError *error, UIImage *image) {
+    if (error) {
+      NSLog(@"%@",error);
+      return;
+    }
+
+    // Set image
+    // [_imageEditorImageView setImage:image];
+    _imageEditorOriginalImage = image;
+    // UIImage *image = [UIImage imageNamed:@"cat.jpg"];
+    _imageEditorImageView = [[UIImageView alloc] initWithImage:image];
+    _imageEditorImageView.frame = (CGRect){.origin=CGPointMake(0.0f, 0.0f), .size=image.size};
+
+    _imageEditorDrawingView = [[UIImageView alloc] initWithFrame:_imageEditorImageView.bounds];
+    _imageEditorDrawingView.userInteractionEnabled = YES;
+
+    _imageEditorContainerView = [[UIView alloc] initWithFrame:_imageEditorImageView.bounds];
+    [_imageEditorContainerView addSubview:_imageEditorImageView];
+    [_imageEditorContainerView addSubview:_imageEditorDrawingView];
+
+    _imageEditorBaseScrollView.contentSize = _imageEditorContainerView.frame.size;
+    [_imageEditorBaseScrollView addSubview:_imageEditorContainerView];
+
+    CGRect scrollViewFrame = _imageEditorBaseScrollView.frame;
+    CGFloat scaleWidth = scrollViewFrame.size.width / _imageEditorBaseScrollView.contentSize.width;
+    CGFloat scaleHeight = scrollViewFrame.size.height / _imageEditorBaseScrollView.contentSize.height;
+    CGFloat minScale = MIN(scaleWidth, scaleHeight);
+    _imageEditorBaseScrollView.minimumZoomScale = minScale;
+    _imageEditorBaseScrollView.maximumZoomScale = 8.0;
+    [_imageEditorBaseScrollView setZoomScale:_imageEditorBaseScrollView.minimumZoomScale];
+
+    /* Must register handler because we are in a new UIWindow and our
+     * imageEditorBaseView does not have a RCTRootView parent */
+    _touchHandler = [[RCTTouchHandler alloc] initWithBridge:_bridge];
+    [_touchHandler addTarget:self action:@selector(drawingOnTouch:)];
+    [_imageEditorDrawingView addGestureRecognizer:_touchHandler];
+
+    _imageEditorViewController.view = _imageEditorBaseScrollView;
+
+    _drawingMode = YES;
+  }];
 }
 
 

@@ -23,6 +23,7 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_VIEW_PROPERTY(isVisible, BOOL);
 RCT_EXPORT_VIEW_PROPERTY(aboveStatusBar, BOOL);
 RCT_EXPORT_VIEW_PROPERTY(drawingMode, BOOL);
+RCT_EXPORT_VIEW_PROPERTY(imageSourceUri, NSString);
 
 RCT_EXPORT_METHOD(saveImage:(RCTResponseSenderBlock) callback) {
   BOOL granted = TRUE;

@@ -7,6 +7,7 @@
 var React = require('react-native');
 var {
   AppRegistry,
+  CameraRoll,
   ListView,
   StyleSheet,
   Text,
@@ -17,13 +18,40 @@ var {
 var ImageEditor = require('react-native-image-editor');
 var PanButton = require('./PanButton');
 
+var PAGE_SIZE = 5;
+
 var ReactNativeImageEditor = React.createClass({
   getInitialState: function() {
+    this._isMounted = true;
+    this._fetchRandomPhoto();
     return {
-      originalImage: null,
+      originalImageSourceUri: 'logo.jpg',
       editorSize: null,
       drawingMode: true
     };
+  },
+
+  _fetchRandomPhoto: function() {
+    CameraRoll.getPhotos(
+      {first: PAGE_SIZE},
+      (data) => {
+        if (!this._isMounted) {
+          return;
+        }
+        var edges = data.edges;
+        var edge = edges[Math.floor(Math.random() * edges.length)];
+        var randomPhoto = edge && edge.node && edge.node.image;
+        if (randomPhoto) {
+          console.log(randomPhoto);
+          this.setState({originalImageSourceUri: randomPhoto.uri});
+        }
+      },
+      (error) => undefined
+    );
+  },
+
+  componentWillUnmount: function() {
+    this._isMounted = false;
   },
 
   _draw: function() {
@@ -48,7 +76,7 @@ var ReactNativeImageEditor = React.createClass({
         <PanButton style={{flex: 3}} onPress={this._save} />
         <ImageEditor drawingMode={this.state.drawingMode}
           ref="imageEditor"
-          image={this.state.originalImage}
+          imageSourceUri={this.state.originalImageSourceUri}
           size={this.state.editorSize}
           style={[styles.imageEditor, this.state.editorSize]}>
         </ImageEditor>

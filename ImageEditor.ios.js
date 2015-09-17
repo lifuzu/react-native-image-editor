@@ -34,6 +34,8 @@ var ImageEditor = React.createClass({
     isVisible: React.PropTypes.bool,
 
     drawingMode: React.PropTypes.bool,
+
+    imageSourceUri: React.PropTypes.string,
   },
 
   getDefaultProps(): Props {
@@ -41,6 +43,7 @@ var ImageEditor = React.createClass({
       aboveStatusBar: false,
       isVisible: true,
       drawingMode: false,
+      imageSourceUri: null,
     }
   },
 
@@ -51,7 +54,7 @@ var ImageEditor = React.createClass({
 
     if (this.props.isVisible) {
       return (
-        <RNImageEditor isVisible={true} drawingMode={this.props.drawingMode} style={styles.container} pointerEvents="none" aboveStatusBar={this.props.aboveStatusBar}>
+        <RNImageEditor isVisible={true} drawingMode={this.props.drawingMode} imageSourceUri={this.props.imageSourceUri} style={styles.container} pointerEvents="none" aboveStatusBar={this.props.aboveStatusBar}>
           {React.Children.map(this.props.children, React.addons.cloneWithProps)}
         </RNImageEditor>
       );
