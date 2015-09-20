@@ -15,9 +15,6 @@
     "RNImageEditor/RNImageEditorManager.h",
     "RNImageEditor/RNImageEditorManager.m"
   ],
-  "peerDependencies": {
-    "react-native": ">=0.10.0 || 0.10.0-rc"
-  },
   "repository": {
     "type": "git",
     "url": "git@github.com:lifuzu/react-native-image-editor.git"
