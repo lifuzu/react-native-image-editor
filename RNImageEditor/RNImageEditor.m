@@ -13,6 +13,8 @@
 #import "UIView+React.h"
 #import "RNClickThroughWindow.h"
 #import "RCTImageLoader.h"
+#import <AssetsLibrary/ALAssetsLibrary.h>
+#import "RCTUtils.h"
 
 @implementation RNImageEditor {
   RNClickThroughWindow *_imageEditorWindow;
@@ -116,7 +118,7 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
   UIGraphicsEndImageContext();
 }
 
-- (void)saveImageImpl:(BOOL)anything {
+- (void)saveImageImpl:(BOOL)anything callback:(RCTResponseSenderBlock)callback {
   CGSize _originalImageSize = _imageEditorOriginalImage.size;
   UIGraphicsBeginImageContextWithOptions(_originalImageSize, NO,
                                          _imageEditorOriginalImage.scale);
@@ -128,11 +130,15 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
 
   UIGraphicsEndImageContext();
 
-  NSFileManager *fileManager = [NSFileManager defaultManager];
   NSData *imageData = UIImageJPEGRepresentation(newImage, 0.6);
-  [fileManager createFileAtPath:@"/Users/rlee/Desktop/myimage.jpg"
-                       contents:imageData
-                     attributes:nil];
+  [[[ALAssetsLibrary alloc] init] writeImageDataToSavedPhotosAlbum:imageData metadata:nil completionBlock:^(NSURL* url, NSError* error) {
+    if (error == nil) {
+      callback(@[[NSNull null], [url absoluteString]]);
+    }
+    else {
+      callback(@[RCTMakeError(error.description, nil, nil)]);
+    }
+  }];
 }
 
 - (void)setImageSourceUri: (NSString*)imageSourceUri {

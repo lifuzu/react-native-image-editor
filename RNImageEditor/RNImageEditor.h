@@ -7,12 +7,13 @@
 //
 
 #import "RCTView.h"
+#import "RCTBridgeModule.h"
 
 @class RCTBridge;
 
 @interface RNImageEditor : RCTView <UIScrollViewDelegate>
 
 - (id)initWithBridge:(RCTBridge *)bridge NS_DESIGNATED_INITIALIZER;
-- (void)saveImageImpl:(BOOL)anything;
+- (void)saveImageImpl:(BOOL)anything callback:(RCTResponseSenderBlock)callback;
 
 @end

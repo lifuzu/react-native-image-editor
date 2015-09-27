@@ -26,10 +26,10 @@ RCT_EXPORT_VIEW_PROPERTY(drawingMode, BOOL);
 RCT_EXPORT_VIEW_PROPERTY(imageSourceUri, NSString);
 
 RCT_EXPORT_METHOD(saveImage:(RCTResponseSenderBlock) callback) {
-  BOOL granted = TRUE;
+//  NSString *imagePath;
   RNImageEditor* imageEditor = [[RNImageEditor alloc] initWithBridge:_bridge];
-  [imageEditor saveImageImpl: TRUE];
-  callback(@[[NSNull null], @(granted)]);
+    [imageEditor saveImageImpl:TRUE callback:callback];
+  //callback(@[[NSNull null], @(imagePath)]);
 }
 
 @end
