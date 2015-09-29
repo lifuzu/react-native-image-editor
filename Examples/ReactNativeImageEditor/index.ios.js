@@ -8,6 +8,7 @@ var React = require('react-native');
 var {
   AppRegistry,
   CameraRoll,
+  Image,
   ListView,
   StyleSheet,
   Text,
@@ -17,14 +18,21 @@ var {
 
 var ImageEditor = require('react-native-image-editor');
 var PanButton = require('./PanButton');
+var Routes = require('./Routes');
 
 var PAGE_SIZE = 5;
 
 var ReactNativeImageEditor = React.createClass({
+  statics: {
+    title: 'Image Editor',
+    description: 'Start to edit image'
+  },
+
   getInitialState: function() {
     this._isMounted = true;
     this._fetchRandomPhoto();
     return {
+      receiptSource: {uri: 'https://my73challenger.files.wordpress.com/2010/11/bs-car-receipt.jpg'},
       originalImageSourceUri: 'logo.jpg',
       editorSize: null,
       drawingMode: true
@@ -43,7 +51,7 @@ var ReactNativeImageEditor = React.createClass({
         var randomPhoto = edge && edge.node && edge.node.image;
         if (randomPhoto) {
           console.log(randomPhoto);
-          this.setState({originalImageSourceUri: randomPhoto.uri});
+          this.setState({receiptSource: randomPhoto});
         }
       },
       (error) => undefined
@@ -67,23 +75,33 @@ var ReactNativeImageEditor = React.createClass({
   // _saved: function(filename) {
   //   console.log("Save the modified image: " + filename);
   // },
+  _onClickImage: function() {
+    console.log(this.state.receiptSource);
+    this.props.navigator.push(Routes.ImageEditScreen(this.state.receiptSource));
+  },
 
   render: function() {
     return (
       <View style={styles.container}>
-        <Text>Hello there</Text>
-        <PanButton style={{flex: 3}} onPress={this._draw} />
-        <PanButton style={{flex: 3}} onPress={this._save} />
-        <ImageEditor drawingMode={this.state.drawingMode}
-          ref="imageEditor"
-          imageSourceUri={this.state.originalImageSourceUri}
-          size={this.state.editorSize}
-          style={[styles.imageEditor, this.state.editorSize]}>
-        </ImageEditor>
+        <TouchableHighlight onPress={this._onClickImage}>
+          <Image source={this.state.receiptSource} style={styles.image} />
+        </TouchableHighlight>
       </View>
     );
   }
 });
+
+
+      // <Text>Hello there</Text>
+      //   <PanButton style={{flex: 3}} onPress={this._draw} />
+      //   <PanButton style={{flex: 3}} onPress={this._save} />
+      //   <ImageEditor drawingMode={this.state.drawingMode}
+      //     ref="imageEditor"
+      //     imageSourceUri={this.state.originalImageSourceUri}
+      //     size={this.state.editorSize}
+      //     style={[styles.imageEditor, this.state.editorSize]}>
+      //   </ImageEditor>
+      // </View>
 
 // <PanButton style={{flex: 3}} onPress={this._save} />
           // <View style={styles.wrapper}>
