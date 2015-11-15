@@ -16,6 +16,8 @@
 #import <AssetsLibrary/ALAssetsLibrary.h>
 #import "RCTUtils.h"
 
+@import ImageIO;
+
 @implementation RNImageEditor {
   RNThroughWindow *_imageEditorWindow;
   UIViewController *_imageEditorViewController;
@@ -131,7 +133,20 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
   UIGraphicsEndImageContext();
 
   NSData *imageData = UIImageJPEGRepresentation(newImage, 0.6);
-  [[[ALAssetsLibrary alloc] init] writeImageDataToSavedPhotosAlbum:imageData metadata:nil completionBlock:^(NSURL* url, NSError* error) {
+
+  //NSMutableDictionary *metadata = [info objectForKey:UIImagePickerControllerMediaMetadata];
+  NSMutableDictionary *metadata;
+
+  // set image name and keywords in IPTC metadata
+  NSString *iptcKey = (NSString *)kCGImagePropertyIPTCDictionary;
+  //NSMutableDictionary *iptcMetadata = [metadata objectForKey:iptcKey];
+  NSMutableDictionary *iptcMetadata;
+  iptcMetadata[(NSString *)kCGImagePropertyIPTCObjectName] = _imageSourceUri;
+  //iptcMetadata[(NSString *)kCGImagePropertyIPTCKeywords] = @"some keywords";
+  metadata[iptcKey] = iptcMetadata;
+
+  [[[ALAssetsLibrary alloc] init] writeImageDataToSavedPhotosAlbum:imageData metadata:metadata completionBlock:^(NSURL* url, NSError* error) {
+    self.removeFromSuperview;
     if (error == nil) {
       callback(@[[NSNull null], [url absoluteString]]);
     }
@@ -141,9 +156,17 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
   }];
 }
 
+- (void) writeCGImage: (CGImageRef) image toURL: (NSURL*) url withType: (CFStringRef) imageType andOptions: (CFDictionaryRef) options
+{
+    CGImageDestinationRef myImageDest = CGImageDestinationCreateWithURL((CFURLRef)url, imageType, 1, nil);
+    CGImageDestinationAddImage(myImageDest, image, options);
+    CGImageDestinationFinalize(myImageDest);
+    CFRelease(myImageDest);
+}
+
 - (void)setImageSourceUri: (NSString*)imageSourceUri {
   _imageSourceUri = imageSourceUri;
-  NSLog(@"%@",_imageSourceUri);
+  //NSLog(@"%@",_imageSourceUri);
   [_bridge.imageLoader loadImageWithTag:_imageSourceUri callback:^(NSError *error, UIImage *image) {
     if (error) {
       NSLog(@"%@",error);
@@ -258,6 +281,11 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
   _imageEditorViewController = nil;
   _imageEditorBaseScrollView = nil;
   _imageEditorWindow = nil;
+  _imageEditorDrawingView = nil;
+  _imageEditorImageView = nil;
+  _imageEditorContainerView = nil;
+  _imageEditorOriginalImage = nil;
+  _imageEditorDrawingImage = nil;
   [super removeFromSuperview];
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
