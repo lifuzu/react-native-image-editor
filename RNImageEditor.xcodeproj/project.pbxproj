@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		624177B21B8E5A4900897A7A /* RNImageEditor.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 624177B11B8E5A4900897A7A /* RNImageEditor.h */; };
 		624177B41B8E5A4900897A7A /* RNImageEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = 624177B31B8E5A4900897A7A /* RNImageEditor.m */; };
-		624177CC1B8E6BBB00897A7A /* RNClickThroughWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 624177CB1B8E6BBB00897A7A /* RNClickThroughWindow.m */; };
+		624177CC1B8E6BBB00897A7A /* RNThroughWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 624177CB1B8E6BBB00897A7A /* RNThroughWindow.m */; };
 		624177CF1B8E6ECA00897A7A /* RNImageEditorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 624177CE1B8E6ECA00897A7A /* RNImageEditorManager.m */; };
 /* End PBXBuildFile section */
 
@@ -30,8 +30,8 @@
 		624177AE1B8E5A4900897A7A /* libRNImageEditor.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNImageEditor.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		624177B11B8E5A4900897A7A /* RNImageEditor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNImageEditor.h; sourceTree = "<group>"; };
 		624177B31B8E5A4900897A7A /* RNImageEditor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNImageEditor.m; sourceTree = "<group>"; };
-		624177CA1B8E6BBB00897A7A /* RNClickThroughWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNClickThroughWindow.h; sourceTree = "<group>"; };
-		624177CB1B8E6BBB00897A7A /* RNClickThroughWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNClickThroughWindow.m; sourceTree = "<group>"; };
+		624177CA1B8E6BBB00897A7A /* RNThroughWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNThroughWindow.h; sourceTree = "<group>"; };
+		624177CB1B8E6BBB00897A7A /* RNThroughWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNThroughWindow.m; sourceTree = "<group>"; };
 		624177CD1B8E6ECA00897A7A /* RNImageEditorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNImageEditorManager.h; sourceTree = "<group>"; };
 		624177CE1B8E6ECA00897A7A /* RNImageEditorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNImageEditorManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -68,8 +68,8 @@
 			children = (
 				624177CD1B8E6ECA00897A7A /* RNImageEditorManager.h */,
 				624177CE1B8E6ECA00897A7A /* RNImageEditorManager.m */,
-				624177CA1B8E6BBB00897A7A /* RNClickThroughWindow.h */,
-				624177CB1B8E6BBB00897A7A /* RNClickThroughWindow.m */,
+				624177CA1B8E6BBB00897A7A /* RNThroughWindow.h */,
+				624177CB1B8E6BBB00897A7A /* RNThroughWindow.m */,
 				624177B11B8E5A4900897A7A /* RNImageEditor.h */,
 				624177B31B8E5A4900897A7A /* RNImageEditor.m */,
 			);
@@ -132,7 +132,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				624177CC1B8E6BBB00897A7A /* RNClickThroughWindow.m in Sources */,
+				624177CC1B8E6BBB00897A7A /* RNThroughWindow.m in Sources */,
 				624177B41B8E5A4900897A7A /* RNImageEditor.m in Sources */,
 				624177CF1B8E6ECA00897A7A /* RNImageEditorManager.m in Sources */,
 			);
@@ -227,6 +227,9 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"${SRCROOT}/node_modules/react-native/React/**",
 					"$(SRCROOT)/node_modules/react-native/Libraries/**",
+					"$(SRCROOT)/../../React/**",
+					"$(SRCROOT)/../react-native/React/**",
+					"$(SRCROOT)/../react-native/Libraries/Image/**",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -242,6 +245,9 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"${SRCROOT}/node_modules/react-native/React/**",
 					"$(SRCROOT)/node_modules/react-native/Libraries/**",
+					"$(SRCROOT)/../../React/**",
+					"$(SRCROOT)/../react-native/React/**",
+					"$(SRCROOT)/../react-native/Libraries/Image/**",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";

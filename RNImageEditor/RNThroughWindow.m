@@ -1,8 +1,8 @@
-#import "RNClickThroughWindow.h"
+#import "RNThroughWindow.h"
 #import "RCTView.h"
 #import "UIView+React.h"
 
-@implementation RNClickThroughWindow
+@implementation RNThroughWindow
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
   UIView *rootView = [[[[self rootViewController] view] subviews] objectAtIndex:0];

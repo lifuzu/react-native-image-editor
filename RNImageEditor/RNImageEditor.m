@@ -11,13 +11,13 @@
 #import "RCTView.h"
 #import "RCTTouchHandler.h"
 #import "UIView+React.h"
-#import "RNClickThroughWindow.h"
+#import "RNThroughWindow.h"
 #import "RCTImageLoader.h"
 #import <AssetsLibrary/ALAssetsLibrary.h>
 #import "RCTUtils.h"
 
 @implementation RNImageEditor {
-  RNClickThroughWindow *_imageEditorWindow;
+  RNThroughWindow *_imageEditorWindow;
   UIViewController *_imageEditorViewController;
   UIScrollView *_imageEditorBaseScrollView;
   UIImageView *_imageEditorImageView;
@@ -218,7 +218,7 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
  * this prop that is always true in order to not create UIWindow for the default props
  * instance */
 - (void)setIsVisible:(BOOL)isVisible {
-  _imageEditorWindow = [[RNClickThroughWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+  _imageEditorWindow = [[RNThroughWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
 //  [self setWindowLevel];
   _imageEditorWindow.backgroundColor = [UIColor clearColor];
   _imageEditorWindow.rootViewController = _imageEditorViewController;
