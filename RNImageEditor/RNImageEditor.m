@@ -67,6 +67,12 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
   return self;
 }
 
+- (void)dealloc
+{
+    _imageEditorViewController = nil;
+    [_imageEditorViewController removeFromParentViewController];
+}
+
 - (void)setDrawingMode:(BOOL)drawingMode {
   _drawingMode = drawingMode;
   _imageEditorDrawingView.userInteractionEnabled = _drawingMode;
@@ -134,34 +140,12 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
 
   NSData *imageData = UIImageJPEGRepresentation(newImage, 0.6);
 
-  //NSMutableDictionary *metadata = [info objectForKey:UIImagePickerControllerMediaMetadata];
-  NSMutableDictionary *metadata;
-
-  // set image name and keywords in IPTC metadata
-  NSString *iptcKey = (NSString *)kCGImagePropertyIPTCDictionary;
-  //NSMutableDictionary *iptcMetadata = [metadata objectForKey:iptcKey];
-  NSMutableDictionary *iptcMetadata;
-  iptcMetadata[(NSString *)kCGImagePropertyIPTCObjectName] = _imageSourceUri;
-  //iptcMetadata[(NSString *)kCGImagePropertyIPTCKeywords] = @"some keywords";
-  metadata[iptcKey] = iptcMetadata;
-
-  [[[ALAssetsLibrary alloc] init] writeImageDataToSavedPhotosAlbum:imageData metadata:metadata completionBlock:^(NSURL* url, NSError* error) {
-    self.removeFromSuperview;
-    if (error == nil) {
-      callback(@[[NSNull null], [url absoluteString]]);
-    }
-    else {
-      callback(@[RCTMakeError(error.description, nil, nil)]);
-    }
-  }];
-}
-
-- (void) writeCGImage: (CGImageRef) image toURL: (NSURL*) url withType: (CFStringRef) imageType andOptions: (CFDictionaryRef) options
-{
-    CGImageDestinationRef myImageDest = CGImageDestinationCreateWithURL((CFURLRef)url, imageType, 1, nil);
-    CGImageDestinationAddImage(myImageDest, image, options);
-    CGImageDestinationFinalize(myImageDest);
-    CFRelease(myImageDest);
+  NSURL *tmpDirURL = [NSURL fileURLWithPath:NSTemporaryDirectory() isDirectory:YES];
+  NSURL *fileURL = [[tmpDirURL URLByAppendingPathComponent:@"car"] URLByAppendingPathExtension:@"jpg"];
+  NSLog(@"fileURL: %@", [fileURL path]);
+  [imageData writeToFile:[fileURL path] atomically:YES];
+  self.removeReactSubview;
+  callback(@[[NSNull null], [fileURL path]]);
 }
 
 - (void)setImageSourceUri: (NSString*)imageSourceUri {
@@ -270,6 +254,19 @@ static void RCTTraverseViewNodes(id<RCTComponent> view, react_view_node_block_t 
 {
   /* Add subviews to the overlay base view rather than self */
   [_imageEditorBaseScrollView insertReactSubview:view atIndex:atIndex];
+}
+
+- (void)removeReactSubview:(UIView *)subview
+{
+    [subview removeFromSuperview];
+    return;
+}
+
+- (void)removeReactSubview
+{
+    [_imageEditorBaseScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    [super removeFromSuperview];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 /* We do not need to support unmounting, so I -think- that this cleanup code
